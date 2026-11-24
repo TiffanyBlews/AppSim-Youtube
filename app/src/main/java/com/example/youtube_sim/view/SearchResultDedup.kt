@@ -96,6 +96,7 @@ private fun extractSearchKeywords(value: String): List<String> {
         .replace("歌曲", " ")
         .replace("音乐", " ")
         .replace("视频", " ")
+        .replace("官方", " ")
         .replace("official", " ")
         .replace("music", " ")
         .replace("video", " ")

@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +20,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -45,6 +49,13 @@ fun CommentsSheet(
     onDismiss: () -> Unit
 ) {
     var draft by remember { mutableStateOf("") }
+    val submitComment = {
+        val text = draft.trim()
+        if (text.isNotBlank()) {
+            onSendComment(text)
+            draft = ""
+        }
+    }
     var sortMode by remember { mutableStateOf(CommentSortMode.TOP) }
     val visibleComments = remember(comments, sortMode) { comments.sortedFor(sortMode) }
 
@@ -52,7 +63,9 @@ fun CommentsSheet(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0x80000000))
-            .clickable(onClick = onDismiss),
+            .clickable(onClick = onDismiss)
+            .navigationBarsPadding()
+            .imePadding(),
         contentAlignment = Alignment.BottomCenter
     ) {
         Surface(
@@ -146,6 +159,8 @@ fun CommentsSheet(
                                 modifier = Modifier.fillMaxWidth(),
                                 placeholder = { Text(text = "Add a comment...", color = Color(0xFF9CA3AF)) },
                                 singleLine = true,
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                                keyboardActions = KeyboardActions(onSend = { submitComment() }),
                                 colors = TextFieldDefaults.colors(
                                     focusedContainerColor = Color(0xFF262626),
                                     unfocusedContainerColor = Color(0xFF262626),
@@ -164,13 +179,7 @@ fun CommentsSheet(
                             tint = if (draft.trim().isBlank()) Color(0xFF9CA3AF) else Color(0xFF93C5FD),
                             modifier = Modifier
                                 .size(20.dp)
-                                .clickable {
-                                    val text = draft.trim()
-                                    if (text.isNotBlank()) {
-                                        onSendComment(text)
-                                        draft = ""
-                                    }
-                                }
+                                .clickable(onClick = submitComment)
                         )
                     }
                 }

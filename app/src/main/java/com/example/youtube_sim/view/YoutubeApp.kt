@@ -222,8 +222,7 @@ fun YoutubeApp(
                 }
             }
             val creatorProfileKey = state.channelProfiles.firstOrNull { profile ->
-                profile.key == normalizeChannelKey(overlay.item.creator) ||
-                    overlay.item.id.contains(profile.key.replace('_', '-'), ignoreCase = true)
+                profile.key == normalizeChannelKey(overlay.item.creator)
             }?.key
             VideoPlayScreen(
                 item = overlay.item,
